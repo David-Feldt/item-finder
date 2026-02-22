@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Item Finder - Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            padding: 50px 20px 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .search-container {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-input {
+            width: 100%;
+            border: 2px solid #007AFF;
+            border-radius: 15px;
+            padding: 18px 20px;
+            font-size: 18px;
+            background: #f8f9fa;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .search-button {
+            width: 100%;
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+        }
+
+        .search-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 10px rgba(0, 122, 255, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007AFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            padding: 0 20px 20px;
+        }
+
+        .item {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .item:active {
+            transform: scale(0.98);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            margin-right: 20px;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 6px;
+        }
+
+        .item-address {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .item-distance {
+            font-size: 16px;
+            color: #007AFF;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .distance-icon {
+            margin-right: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 40px 15px 25px;
+            }
+            
+            .title {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .search-container {
+                padding: 15px;
+            }
+            
+            .item {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .item-image {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .item-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">🔍 Item Finder</h1>
+        <p class="subtitle">Find nearby items fast</p>
+    </div>
+
+    <div class="search-container">
+        <input 
+            type="text" 
+            class="search-input" 
+            id="searchInput"
+            placeholder="What are you looking for? (e.g., flashlight)"
+            autocomplete="off"
+        >
+        <button class="search-button" onclick="searchItems()">
+            <span id="buttonText">Search</span>
+        </button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        const mockResults = [
+            {
+                id: '1',
+                name: 'Canadian Tire',
+                vicinity: '123 Yonge St, Toronto',
+                image: 'https://via.placeholder.com/150/FF6B6B/FFFFFF?text=Canadian+Tire',
+                distance: '0.8'
+            },
+            {
+                id: '2', 
+                name: 'Home Depot',
+                vicinity: '456 Queen St W, Toronto',
+                image: 'https://via.placeholder.com/150/4ECDC4/FFFFFF?text=Home+Depot',
+                distance: '1.2'
+            },
+            {
+                id: '3',
+                name: 'Walmart',
+                vicinity: '789 Dundas St, Toronto', 
+                image: 'https://via.placeholder.com/150/45B7D1/FFFFFF?text=Walmart',
+                distance: '2.1'
+            },
+            {
+                id: '4',
+                name: 'Lowes',
+                vicinity: '321 Bloor St W, Toronto', 
+                image: 'https://via.placeholder.com/150/96CEB4/FFFFFF?text=Lowes',
+                distance: '1.5'
+            }
+        ];
+
+        function searchItems() {
+            const searchInput = document.getElementById('searchInput');
+            const button = document.querySelector('.search-button');
+            const buttonText = document.getElementById('buttonText');
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                // Gentle vibration if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(100);
+                }
+                searchInput.focus();
+                return;
+            }
+
+            // Disable button and show loading
+            button.disabled = true;
+            buttonText.textContent = 'Searching...';
+            button.classList.add('pulse');
+
+            const resultsDiv = document.getElementById('results');
+            
+            // Show loading
+            resultsDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Finding nearby items...</p>
+                </div>
+            `;
+
+            // Simulate API call
+            setTimeout(() => {
+                displayResults(mockResults);
+                
+                // Re-enable button
+                button.disabled = false;
+                buttonText.textContent = 'Search';
+                button.classList.remove('pulse');
+            }, 1500);
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h3>🔍 No results found</h3>
+                        <p>Try searching for something else or check your spelling</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const resultsHTML = results.map(item => `
+                <div class="item">
+                    <div class="item-header">
+                        <img src="${item.image}" alt="${item.name}" class="item-image">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-address">${item.vicinity}</div>
+                            <div class="item-distance">
+                                <span class="distance-icon">📍</span>
+                                ${item.distance} km away
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            resultsDiv.innerHTML = resultsHTML + `
+                <div class="footer">
+                    Found ${results.length} places near you
+                </div>
+            `;
+        }
+
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchItems();
+            }
+        });
+
+        // Focus input on load
+        window.addEventListener('load', function() {
+            document.getElementById('searchInput').focus();
+        });
+
+        // Add some mobile-friendly touches
+        document.addEventListener('touchstart', function() {}, {passive: true});
+    </script>
+</body>
+</html>
